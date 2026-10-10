@@ -4,14 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>회의록 할 일 정리</title>
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <main>
+    <header class="page-header">
       <h1 id="app-title"></h1>
       <p id="app-description"></p>
-      <textarea id="minutes-input" rows="12" cols="60" placeholder="회의록을 여기에 붙여 넣으세요"></textarea>
-      <p id="action-items-empty">할 일이 없습니다.</p>
-      <ul id="action-items"></ul>
+    </header>
+    <main>
+      <section class="card">
+        <label for="minutes-input">회의록</label>
+        <textarea id="minutes-input" rows="12" placeholder="회의록을 여기에 붙여 넣으세요"></textarea>
+      </section>
+      <section class="card">
+        <h2>할 일</h2>
+        <p id="action-items-empty">할 일이 없습니다.</p>
+        <ul id="action-items"></ul>
+      </section>
     </main>
     <script type="module" src="/src/web-main.ts"></script>
   </body>

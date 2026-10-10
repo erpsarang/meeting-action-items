@@ -1,0 +1,228 @@
+:root {
+  --sapBackgroundColor: #f5f6f7;
+  --sapShellColor: #ffffff;
+  --sapTextColor: #1d2d3e;
+  --sapContent_LabelColor: #556b82;
+  --sapBrandColor: #0064d9;
+  --sapBrandHoverColor: #0057b8;
+  --sapBrandActiveColor: #004a9f;
+  --sapDisabledColor: #d5dadd;
+  --sapDisabledTextColor: #5b738b;
+  --sapBorderColor: #758ca4;
+  --sapListBorderColor: #e5e5e5;
+  --sapWarningColor: #e76500;
+  --sapWarningBackground: #fff8d6;
+  --sapFontFamily: "72", "72full", Arial, Helvetica, sans-serif;
+  --sapCornerRadius: 0.5rem;
+  --sapShadow: 0 0 0 0.0625rem rgba(85, 107, 130, 0.25), 0 0.125rem 0.5rem rgba(34, 53, 72, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--sapBackgroundColor);
+  color: var(--sapTextColor);
+  font-family: var(--sapFontFamily);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.page-header {
+  background: var(--sapShellColor);
+  border-bottom: 1px solid var(--sapListBorderColor);
+  padding: 1.5rem 2rem 1rem;
+}
+
+.page-header > * {
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-header h1 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: var(--sapContent_LabelColor);
+}
+
+main {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem 2rem 2rem;
+}
+
+.card {
+  background: var(--sapShellColor);
+  border-radius: var(--sapCornerRadius);
+  box-shadow: var(--sapShadow);
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.card h2,
+.card label {
+  display: block;
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--sapBorderColor);
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: var(--sapTextColor);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+textarea:hover {
+  border-color: var(--sapBrandColor);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sapBrandColor);
+  outline-offset: 2px;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  color: var(--sapContent_LabelColor);
+  font-size: 0.875rem;
+}
+
+#action-items-empty {
+  margin: 0;
+  color: var(--sapContent_LabelColor);
+  overflow-wrap: anywhere;
+}
+
+#action-items-empty[hidden] {
+  display: none;
+}
+
+#action-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--sapListBorderColor);
+  border-radius: var(--sapCornerRadius);
+}
+
+.group:first-child {
+  margin-top: 0;
+}
+
+.group-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.items {
+  flex: 1 1 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.items > li {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--sapListBorderColor);
+  overflow-wrap: anywhere;
+}
+
+.items > li.done {
+  color: var(--sapContent_LabelColor);
+  text-decoration: line-through;
+}
+
+.group-unclear {
+  border-left: 0.25rem solid var(--sapWarningColor);
+  background: var(--sapWarningBackground);
+}
+
+.button {
+  min-height: 2rem;
+  padding: 0 1rem;
+  border: 1px solid var(--sapBrandColor);
+  border-radius: 0.5rem;
+  background: var(--sapBrandColor);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--sapBrandHoverColor);
+  border-color: var(--sapBrandHoverColor);
+}
+
+.button:active {
+  background: var(--sapBrandActiveColor);
+  border-color: var(--sapBrandActiveColor);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--sapBrandColor);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  background: var(--sapDisabledColor);
+  border-color: var(--sapDisabledColor);
+  color: var(--sapDisabledTextColor);
+  cursor: not-allowed;
+}
+
+.manual-copy {
+  flex: 1 1 100%;
+  width: 100%;
+  background: #f5f6f7;
+}
+
+@media (max-width: 600px) {
+  .page-header {
+    padding: 1rem;
+  }
+
+  main {
+    padding: 0.5rem 1rem 1rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+
+  .group {
+    padding: 0.75rem;
+  }
+}
