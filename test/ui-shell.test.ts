@@ -16,6 +16,25 @@ test("index.html은 styles.css를 연결한다", () => {
   assert.match(html, /<link rel="stylesheet" href="\/src\/styles\.css" \/>/);
 });
 
+test("index.html의 section은 aria-labelledby로 제목과 연결된다", () => {
+  const sections = html.match(/<section\b[^>]*>/g) ?? [];
+  assert.equal(sections.length, 2);
+  for (const tag of sections) {
+    const match = /aria-labelledby="([^"]+)"/.exec(tag);
+    assert.ok(match, `aria-labelledby 없음: ${tag}`);
+    assert.ok(html.includes(`id="${match[1]}"`), `${match[1]} 제목 없음`);
+  }
+});
+
+test("styles.css는 포커스 표시와 좁은 화면 규칙을 가진다", () => {
+  assert.match(css, /:focus-visible/);
+  assert.match(css, /@media/);
+});
+
+test("styles.css는 url()로 리소스를 불러오지 않는다", () => {
+  assert.doesNotMatch(css, /url\(/);
+});
+
 test("index.html과 styles.css에는 외부 URL이 없다", () => {
   assert.doesNotMatch(html, /https?:\/\//);
   assert.doesNotMatch(css, /https?:\/\//);

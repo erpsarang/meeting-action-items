@@ -39,7 +39,7 @@ function render(): void {
       );
       const copyButton = document.createElement("button");
       copyButton.type = "button";
-      copyButton.className = "button";
+      copyButton.className = "button button-default";
       copyButton.setAttribute("aria-live", "polite");
       copyButton.textContent = "복사";
       copyButton.disabled = !hasCopyableItems(group);
@@ -64,6 +64,7 @@ function render(): void {
                 manualCopy = document.createElement("textarea");
                 manualCopy.readOnly = true;
                 manualCopy.className = "manual-copy";
+                manualCopy.setAttribute("aria-label", "복사할 글");
                 manualCopy.rows = text.split("\n").length;
                 groupLi.append(manualCopy);
               }
