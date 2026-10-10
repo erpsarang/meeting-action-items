@@ -1,3 +1,8 @@
+import { setDefaultFontLoading } from "@ui5/webcomponents-base/dist/config/Fonts.js";
+import "@ui5/webcomponents/dist/Card.js";
+import "@ui5/webcomponents/dist/CardHeader.js";
+import "@ui5/webcomponents/dist/TextArea.js";
+import type TextArea from "@ui5/webcomponents/dist/TextArea.js";
 import {
   FORMAT_GUIDE,
   FORMAT_HINT,
@@ -8,10 +13,12 @@ import { appInfo } from "./app-info.js";
 import { COPY_FAILED_LABEL, formatGroupForCopy, hasCopyableItems } from "./copy-text.js";
 import { groupByAssignee } from "./group-items.js";
 
+setDefaultFontLoading(false);
+
 document.querySelector<HTMLElement>("#app-title")!.textContent = appInfo.title;
 document.querySelector<HTMLElement>("#app-description")!.textContent = appInfo.description;
 
-const input = document.querySelector<HTMLTextAreaElement>("#minutes-input")!;
+const input = document.querySelector<TextArea>("#minutes-input")!;
 const list = document.querySelector<HTMLUListElement>("#action-items")!;
 const empty = document.querySelector<HTMLElement>("#action-items-empty")!;
 
