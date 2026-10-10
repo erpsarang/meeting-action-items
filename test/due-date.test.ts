@@ -62,6 +62,26 @@ test("연도 없는 날짜끼리는 월·일만 비교한다", () => {
   );
 });
 
+test("연도 있는 기한과 없는 기한이 섞여도 기한 빠른 순으로 정렬한다", () => {
+  const groups = groupByAssignee(
+    parseActionItems("김철수: 견적 회신 (10/20)\n김철수: 계약서 검토 (2026-10-15)"),
+  );
+  assert.deepEqual(
+    groups[0]?.items.map((i) => i.due),
+    ["2026-10-15", "10/20"],
+  );
+});
+
+test("형식이 달라도 같은 날짜는 적힌 순서를 유지한다", () => {
+  const groups = groupByAssignee(
+    parseActionItems("이영희: A (2026-10-15)\n이영희: B (10/15)"),
+  );
+  assert.deepEqual(
+    groups[0]?.items.map((i) => i.task),
+    ["A", "B"],
+  );
+});
+
 test("체크박스가 없어도 새 형식 기한이 있으면 확정된 할 일이다", () => {
   const result = classifyActionItems("박지훈: 보고서 제출 (10월 20일)");
   assert.equal(result.items.length, 1);
