@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { classifyActionItems, parseActionItems } from "../src/action-items.js";
-import { dueRank, parseDueDate } from "../src/due-date.js";
+import { dueRank, estimateYear, parseDueDate } from "../src/due-date.js";
 import { groupByAssignee } from "../src/group-items.js";
 
 test("4개 형식을 해석한다", () => {
@@ -52,14 +52,23 @@ test("연도가 있는 날짜는 연도까지 비교한다", () => {
   );
 });
 
-test("연도 없는 날짜끼리는 월·일만 비교한다", () => {
+test("연도 없는 날짜끼리는 같은 해 안에서 월·일로 비교한다", () => {
   const groups = groupByAssignee(
     parseActionItems("이영희: 가 (1/5)\n이영희: 나 (12/30)"),
+    new Date(2026, 2, 1),
   );
   assert.deepEqual(
     groups[0]?.items.map((i) => i.due),
     ["1/5", "12/30"],
   );
+});
+
+test("연도 없는 월·일이 크게 지났으면 다음 해로 추정한다", () => {
+  const today = new Date(2026, 11, 20);
+  assert.equal(estimateYear(12, 30, today), 2026);
+  assert.equal(estimateYear(1, 5, today), 2027);
+  assert.equal(estimateYear(2, 29, today), 2027);
+  assert.ok(dueRank("1/5", 0, today) > dueRank("12/30", 0, today));
 });
 
 test("연도 있는 기한과 없는 기한이 섞여도 기한 빠른 순으로 정렬한다", () => {

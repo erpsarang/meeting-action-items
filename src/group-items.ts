@@ -7,8 +7,11 @@ export interface AssigneeGroup {
   items: ActionItem[];
 }
 
-/** 담당자별로 묶고(첫 등장 순서), 묶음 안은 기한 빠른 순으로 정렬한다. */
-export function groupByAssignee(items: ActionItem[]): AssigneeGroup[] {
+/**
+ * 담당자별로 묶고(첫 등장 순서), 묶음 안은 기한 빠른 순으로 정렬한다.
+ * 연도가 적힌 기한이 없는 묶음의 연도 없는 기한은 today 기준으로 연도를 추정한다.
+ */
+export function groupByAssignee(items: ActionItem[], today: Date = new Date()): AssigneeGroup[] {
   const groups = new Map<string, ActionItem[]>();
   for (const item of items) {
     const bucket = groups.get(item.assignee);
@@ -20,7 +23,11 @@ export function groupByAssignee(items: ActionItem[]): AssigneeGroup[] {
     return {
       assignee,
       items: bucket
-        .map((item, index) => ({ item, index, rank: dueRank(item.due, year) }))
+        .map((item, index) => ({
+          item,
+          index,
+          rank: year > 0 ? dueRank(item.due, year) : dueRank(item.due, 0, today),
+        }))
         .sort((a, b) => {
           if (a.rank === b.rank) return a.index - b.index;
           return a.rank < b.rank ? -1 : 1;
