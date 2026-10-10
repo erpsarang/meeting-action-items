@@ -53,6 +53,33 @@ test("메모가 섞여 있으면 할 일 줄만 순서대로 뽑는다", () => {
   );
 });
 
+test("번호·굵은 이름·이름 뒤 괄호·여러 담당자·하이픈 구분 줄을 읽는다", () => {
+  assert.deepEqual(parseActionItems("1. 김철수: 견적 회신 (10/20)"), [
+    { assignee: "김철수", task: "견적 회신", due: "10/20", done: false },
+  ]);
+  assert.deepEqual(parseActionItems("2) 이영희: 계약서 검토"), [
+    { assignee: "이영희", task: "계약서 검토", done: false },
+  ]);
+  assert.deepEqual(parseActionItems("**김철수**: 견적 회신\n**김철수:** 견적 회신"), [
+    { assignee: "김철수", task: "견적 회신", done: false },
+    { assignee: "김철수", task: "견적 회신", done: false },
+  ]);
+  assert.deepEqual(parseActionItems("김철수(개발): 로그 확인 (10/22)"), [
+    { assignee: "김철수", task: "(개발) 로그 확인", due: "10/22", done: false },
+  ]);
+  assert.deepEqual(parseActionItems("김철수, 박지훈: 일정 조율 (10/25)"), [
+    { assignee: "김철수", task: "일정 조율", due: "10/25", done: false },
+    { assignee: "박지훈", task: "일정 조율", due: "10/25", done: false },
+  ]);
+  assert.deepEqual(parseActionItems("김철수 - 견적 회신 (10/20)"), [
+    { assignee: "김철수", task: "견적 회신", due: "10/20", done: false },
+  ]);
+});
+
+test("하이픈은 이름 바로 뒤의 ` - `일 때만 구분자다", () => {
+  assert.deepEqual(parseActionItems("2026-10-15 회의\n김철수-견적 회신\n김철수 -견적 회신\n회의 결과 요약 안내 - 내용"), []);
+});
+
 test("안건과 결정 줄은 담당자로 뽑지 않는다", () => {
   assert.deepEqual(parseActionItems("안건: 예산\n결정: 예산 확정\n- [ ] 안건: 예산"), []);
 });
