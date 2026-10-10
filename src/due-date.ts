@@ -35,11 +35,21 @@ export function parseDueDate(text: string): DueDate | null {
   return null;
 }
 
-// year*10000 + month*100 + day. 연도가 없으면 year 0이라 월·일만 비교한다.
+// 묶음에서 연도가 적힌 첫 번째 기한의 연도. 없으면 0.
+export function referenceYear(dues: (string | undefined)[]): number {
+  for (const due of dues) {
+    if (!due) continue;
+    const parsed = parseDueDate(due);
+    if (parsed?.year !== undefined) return parsed.year;
+  }
+  return 0;
+}
+
+// year*10000 + month*100 + day. 연도가 없으면 yearlessYear(기본 0)를 연도로 본다.
 // 기한이 없거나 해석되지 않으면 맨 아래.
-export function dueRank(due: string | undefined): number {
+export function dueRank(due: string | undefined, yearlessYear = 0): number {
   if (!due) return Number.POSITIVE_INFINITY;
   const parsed = parseDueDate(due);
   if (!parsed) return Number.POSITIVE_INFINITY;
-  return (parsed.year ?? 0) * 10000 + parsed.month * 100 + parsed.day;
+  return (parsed.year ?? yearlessYear) * 10000 + parsed.month * 100 + parsed.day;
 }
