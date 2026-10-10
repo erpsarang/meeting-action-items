@@ -60,3 +60,39 @@ test("완료 항목도 목록에 남고 같은 기준으로 정렬한다", () =>
 test("빈 목록은 빈 묶음이다", () => {
   assert.deepEqual(groupByAssignee([]), []);
 });
+
+test("연말과 연초에 걸친 연도 없는 기한도 실제 기한 빠른 순으로 정렬한다", () => {
+  const today = new Date(2026, 11, 20);
+  for (const text of [
+    "김철수: 결산 보고 (12/30)\n김철수: 신년 계획 (1/5)",
+    "김철수: 신년 계획 (1/5)\n김철수: 결산 보고 (12/30)",
+  ]) {
+    const groups = groupByAssignee(parseActionItems(text), today);
+    assert.deepEqual(
+      groups[0]?.items.map((i) => i.due),
+      ["12/30", "1/5"],
+    );
+  }
+});
+
+test("연도가 적힌 기한이 있는 묶음은 그 연도를 연도 없는 기한에 적용한다", () => {
+  const groups = groupByAssignee(
+    parseActionItems("김철수: 가 (1/5)\n김철수: 나 (2027-01-03)"),
+    new Date(2026, 11, 20),
+  );
+  assert.deepEqual(
+    groups[0]?.items.map((i) => i.due),
+    ["2027-01-03", "1/5"],
+  );
+});
+
+test("183일까지는 같은 해, 184일부터는 다음 해로 본다", () => {
+  const groups = groupByAssignee(
+    parseActionItems("김철수: 가 (6/19)\n김철수: 나 (6/20)"),
+    new Date(2026, 11, 20),
+  );
+  assert.deepEqual(
+    groups[0]?.items.map((i) => i.due),
+    ["6/20", "6/19"],
+  );
+});

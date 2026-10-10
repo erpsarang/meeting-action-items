@@ -45,11 +45,27 @@ export function referenceYear(dues: (string | undefined)[]): number {
   return 0;
 }
 
-// year*10000 + month*100 + day. 연도가 없으면 yearlessYear(기본 0)를 연도로 본다.
+// 연도 없는 월·일이 today보다 이 일수를 넘게 지났으면 다음 해의 기한으로 본다(약 6개월).
+const YEARLESS_PAST_THRESHOLD_DAYS = 183;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/** 연도 없는 월·일의 연도를 today 기준으로 추정한다. 크게 지난 월·일은 다음 해로 본다. */
+export function estimateYear(month: number, day: number, today: Date): number {
+  const year = today.getFullYear();
+  const todayMs = Date.UTC(year, today.getMonth(), today.getDate());
+  // 윤년이 아닌 해의 2/29는 3/1로 넘어가지만 비교에는 문제가 없다.
+  const dueMs = Date.UTC(year, month - 1, day);
+  const daysPast = (todayMs - dueMs) / MS_PER_DAY;
+  return daysPast > YEARLESS_PAST_THRESHOLD_DAYS ? year + 1 : year;
+}
+
+// year*10000 + month*100 + day. 연도가 없으면 today가 있을 때 추정 연도를, 없으면 yearlessYear(기본 0)를 연도로 본다.
 // 기한이 없거나 해석되지 않으면 맨 아래.
-export function dueRank(due: string | undefined, yearlessYear = 0): number {
+export function dueRank(due: string | undefined, yearlessYear = 0, today?: Date): number {
   if (!due) return Number.POSITIVE_INFINITY;
   const parsed = parseDueDate(due);
   if (!parsed) return Number.POSITIVE_INFINITY;
-  return (parsed.year ?? yearlessYear) * 10000 + parsed.month * 100 + parsed.day;
+  const year =
+    parsed.year ?? (today ? estimateYear(parsed.month, parsed.day, today) : yearlessYear);
+  return year * 10000 + parsed.month * 100 + parsed.day;
 }
