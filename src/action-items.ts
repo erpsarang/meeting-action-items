@@ -1,3 +1,5 @@
+import { parseDueDate } from "./due-date.js";
+
 /** 회의록에서 뽑아낸 할 일 한 건. */
 export interface ActionItem {
   assignee: string;
@@ -12,11 +14,9 @@ const DUE_PATTERN = /^(.*?)\s*\(([^()]+)\)$/;
 // 담당자가 아닌 라벨.
 const NON_ASSIGNEE_LABELS = new Set(["안건", "결정"]);
 
-const DUE_DATE_SIGNAL = /^\d{1,2}\/\d{1,2}$/;
-
 interface ParsedLine {
   item: ActionItem;
-  // 체크박스 또는 줄 끝 M/D 기한이 있으면 할 일로 확정한다.
+  // 체크박스 또는 줄 끝에 해석되는 기한이 있으면 할 일로 확정한다.
   confirmed: boolean;
 }
 
@@ -43,7 +43,7 @@ function parseLine(line: string): ParsedLine | null {
 
     const item: ActionItem = { assignee, task, done: mark === "x" || mark === "X" };
     if (due) item.due = due;
-    const confirmed = mark !== undefined || (due !== undefined && DUE_DATE_SIGNAL.test(due));
+    const confirmed = mark !== undefined || (due !== undefined && parseDueDate(due) !== null);
     return { item, confirmed };
   }
 }
