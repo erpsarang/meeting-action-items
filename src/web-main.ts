@@ -20,9 +20,12 @@ function render(): void {
   const unread = collectUnreadLines(input.value);
   const groupLis = groupByAssignee(items).map((group) => {
       const groupLi = document.createElement("li");
+      groupLi.className = "group";
       const title = document.createElement("strong");
       title.textContent = group.assignee;
+      title.className = "group-title";
       const sub = document.createElement("ul");
+      sub.className = "items";
       sub.append(
         ...group.items.map((item) => {
           const li = document.createElement("li");
@@ -30,13 +33,14 @@ function render(): void {
           li.textContent = `${item.done ? "[완료] " : ""}${item.task}${due}`;
           if (item.done) {
             li.className = "done";
-            li.style.textDecoration = "line-through";
           }
           return li;
         }),
       );
       const copyButton = document.createElement("button");
       copyButton.type = "button";
+      copyButton.className = "button";
+      copyButton.setAttribute("aria-live", "polite");
       copyButton.textContent = "복사";
       copyButton.disabled = !hasCopyableItems(group);
       let manualCopy: HTMLTextAreaElement | undefined;
@@ -59,6 +63,7 @@ function render(): void {
               if (!manualCopy) {
                 manualCopy = document.createElement("textarea");
                 manualCopy.readOnly = true;
+                manualCopy.className = "manual-copy";
                 manualCopy.rows = text.split("\n").length;
                 groupLi.append(manualCopy);
               }
@@ -73,9 +78,12 @@ function render(): void {
   const extra: HTMLLIElement[] = [];
   if (unclear.length > 0 || unread.length > 0) {
     const unclearLi = document.createElement("li");
+    unclearLi.className = "group group-unclear";
     const title = document.createElement("strong");
     title.textContent = "확인이 필요한 줄";
+    title.className = "group-title";
     const sub = document.createElement("ul");
+    sub.className = "items";
     sub.append(
       ...unclear.map((item) => {
         const li = document.createElement("li");
@@ -106,6 +114,7 @@ function render(): void {
 
 const formatHint = document.createElement("p");
 formatHint.textContent = FORMAT_HINT;
+formatHint.className = "hint";
 input.insertAdjacentElement("afterend", formatHint);
 
 input.addEventListener("input", render);
