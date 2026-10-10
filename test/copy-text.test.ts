@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { classifyActionItems } from "../src/action-items.js";
-import { formatGroupForCopy, hasCopyableItems } from "../src/copy-text.js";
+import { COPY_FAILED_LABEL, formatGroupForCopy, hasCopyableItems } from "../src/copy-text.js";
 import { groupByAssignee } from "../src/group-items.js";
 
 function groupsOf(text: string) {
@@ -40,4 +40,11 @@ test("HTML 문자는 해석하지 않고 그대로 둔다", () => {
     items: [{ assignee: "Jim Corners", task: "<b>확인</b>", done: false }],
   };
   assert.equal(formatGroupForCopy(group), "Jim Corners\n- <b>확인</b>");
+});
+
+test("복사 실패 문구 상수가 있고 복사 글 형식은 그대로다", () => {
+  assert.equal(COPY_FAILED_LABEL, "복사 실패");
+  const [group] = groupsOf("김철수: 견적 회신 (10/20)");
+  assert.ok(group);
+  assert.equal(formatGroupForCopy(group), "김철수\n- 견적 회신 (10/20)");
 });
