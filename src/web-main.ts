@@ -1,4 +1,4 @@
-import { parseActionItems } from "./action-items.js";
+import { classifyActionItems } from "./action-items.js";
 import { appInfo } from "./app-info.js";
 import { groupByAssignee } from "./group-items.js";
 
@@ -10,9 +10,8 @@ const list = document.querySelector<HTMLUListElement>("#action-items")!;
 const empty = document.querySelector<HTMLElement>("#action-items-empty")!;
 
 function render(): void {
-  const items = parseActionItems(input.value);
-  list.replaceChildren(
-    ...groupByAssignee(items).map((group) => {
+  const { items, unclear } = classifyActionItems(input.value);
+  const groupLis = groupByAssignee(items).map((group) => {
       const groupLi = document.createElement("li");
       const title = document.createElement("strong");
       title.textContent = group.assignee;
@@ -31,9 +30,26 @@ function render(): void {
       );
       groupLi.append(title, sub);
       return groupLi;
-    }),
-  );
-  empty.hidden = items.length > 0;
+  });
+  const extra: HTMLLIElement[] = [];
+  if (unclear.length > 0) {
+    const unclearLi = document.createElement("li");
+    const title = document.createElement("strong");
+    title.textContent = "확인이 필요한 줄";
+    const sub = document.createElement("ul");
+    sub.append(
+      ...unclear.map((item) => {
+        const li = document.createElement("li");
+        const due = item.due ? ` (${item.due})` : "";
+        li.textContent = `${item.assignee}: ${item.task}${due}`;
+        return li;
+      }),
+    );
+    unclearLi.append(title, sub);
+    extra.push(unclearLi);
+  }
+  list.replaceChildren(...groupLis, ...extra);
+  empty.hidden = items.length > 0 || unclear.length > 0;
 }
 
 input.addEventListener("input", render);
