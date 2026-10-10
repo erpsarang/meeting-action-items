@@ -3,6 +3,14 @@ import "@ui5/webcomponents/dist/Card.js";
 import "@ui5/webcomponents/dist/CardHeader.js";
 import "@ui5/webcomponents/dist/TextArea.js";
 import type TextArea from "@ui5/webcomponents/dist/TextArea.js";
+import "@ui5/webcomponents/dist/Button.js";
+import type Button from "@ui5/webcomponents/dist/Button.js";
+import "@ui5/webcomponents/dist/List.js";
+import type List from "@ui5/webcomponents/dist/List.js";
+import "@ui5/webcomponents/dist/ListItemStandard.js";
+import type ListItemStandard from "@ui5/webcomponents/dist/ListItemStandard.js";
+import "@ui5/webcomponents/dist/MessageStrip.js";
+import type MessageStrip from "@ui5/webcomponents/dist/MessageStrip.js";
 import {
   FORMAT_GUIDE,
   FORMAT_HINT,
@@ -22,6 +30,21 @@ const input = document.querySelector<TextArea>("#minutes-input")!;
 const list = document.querySelector<HTMLUListElement>("#action-items")!;
 const empty = document.querySelector<HTMLElement>("#action-items-empty")!;
 
+function createItem(text: string, done = false): ListItemStandard {
+  const li = document.createElement("ui5-li") as ListItemStandard;
+  li.text = text;
+  if (done) {
+    li.className = "done";
+  }
+  return li;
+}
+
+function createList(): List {
+  const items = document.createElement("ui5-list") as List;
+  items.className = "items";
+  return items;
+}
+
 function render(): void {
   const { items, unclear } = classifyActionItems(input.value);
   const unread = collectUnreadLines(input.value);
@@ -31,22 +54,16 @@ function render(): void {
       const title = document.createElement("strong");
       title.textContent = group.assignee;
       title.className = "group-title";
-      const sub = document.createElement("ul");
-      sub.className = "items";
+      const sub = createList();
       sub.append(
         ...group.items.map((item) => {
-          const li = document.createElement("li");
           const due = item.due ? ` (${item.due})` : "";
-          li.textContent = `${item.done ? "[완료] " : ""}${item.task}${due}`;
-          if (item.done) {
-            li.className = "done";
-          }
-          return li;
+          return createItem(`${item.done ? "[완료] " : ""}${item.task}${due}`, item.done);
         }),
       );
-      const copyButton = document.createElement("button");
-      copyButton.type = "button";
-      copyButton.className = "button button-default";
+      const copyButton = document.createElement("ui5-button") as Button;
+      copyButton.design = "Default";
+      copyButton.accessibleName = `${group.assignee} 할 일 복사`;
       copyButton.setAttribute("aria-live", "polite");
       copyButton.textContent = "복사";
       copyButton.disabled = !hasCopyableItems(group);
@@ -90,24 +107,19 @@ function render(): void {
     const title = document.createElement("strong");
     title.textContent = "확인이 필요한 줄";
     title.className = "group-title";
-    const sub = document.createElement("ul");
-    sub.className = "items";
+    const strip = document.createElement("ui5-message-strip") as MessageStrip;
+    strip.design = "Critical";
+    strip.hideCloseButton = true;
+    const sub = createList();
     sub.append(
       ...unclear.map((item) => {
-        const li = document.createElement("li");
         const due = item.due ? ` (${item.due})` : "";
-        li.textContent = `${item.assignee}: ${item.task}${due}`;
-        return li;
+        return createItem(`${item.assignee}: ${item.task}${due}`);
       }),
     );
-    sub.append(
-      ...unread.map((line) => {
-        const li = document.createElement("li");
-        li.textContent = line;
-        return li;
-      }),
-    );
-    unclearLi.append(title, sub);
+    sub.append(...unread.map((line) => createItem(line)));
+    strip.append(title, sub);
+    unclearLi.append(strip);
     extra.push(unclearLi);
   }
   list.replaceChildren(...groupLis, ...extra);
