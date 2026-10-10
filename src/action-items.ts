@@ -79,3 +79,28 @@ export function classifyActionItems(text: string): { items: ActionItem[]; unclea
   }
   return { items, unclear };
 }
+
+/** 입력 칸 옆에 적는 인식되는 형식 한 줄. */
+export const FORMAT_HINT = "인식되는 형식: 이름: 할 일 (기한) 예) 김철수: 견적 회신 (10/20)";
+
+/** 할 일을 하나도 읽지 못했을 때 보여 주는 형식 안내와 예시. */
+export const FORMAT_GUIDE =
+  "읽을 수 있는 할 일이 없습니다. '이름: 할 일' 형식으로 쓰면 인식됩니다. 예) 김철수: 견적 회신 (10/20) / 이영희: 계약서 검토";
+
+/**
+ * 읽지 못한 줄 중 ':' 또는 '：'가 있는 줄을 trim한 원문 그대로 입력 순서대로 돌려준다.
+ * `안건`/`결정` 라벨 줄은 제외한다.
+ */
+export function collectUnreadLines(text: string): string[] {
+  const lines: string[] = [];
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (line === "") continue;
+    if (parseLine(raw) !== null) continue;
+    if (!line.includes(":") && !line.includes("：")) continue;
+    const match = LINE_PATTERN.exec(raw);
+    if (match?.[2] !== undefined && NON_ASSIGNEE_LABELS.has(match[2])) continue;
+    lines.push(line);
+  }
+  return lines;
+}

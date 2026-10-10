@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { classifyActionItems, parseActionItems } from "../src/action-items.js";
+import {
+  FORMAT_GUIDE,
+  FORMAT_HINT,
+  classifyActionItems,
+  collectUnreadLines,
+  parseActionItems,
+} from "../src/action-items.js";
 
 test("신호 없는 `참고: 이전 회의록`은 확인이 필요한 줄에 나온다", () => {
   const result = classifyActionItems("참고: 이전 회의록");
@@ -64,4 +70,31 @@ test("안건과 결정은 지금처럼 제외된다", () => {
 
 test("parseActionItems는 신호와 관계없이 모든 줄을 그대로 돌려준다", () => {
   assert.equal(parseActionItems("참고: 이전 회의록").length, 1);
+});
+
+test("읽지 못한 줄 중 콜론이 있는 줄을 원문 그대로 순서대로 모은다", () => {
+  const text = [
+    "1. 김철수: 견적 회신 (10/20)",
+    "**김철수**: 견적 회신",
+    "김철수(개발): 로그 확인",
+    "김철수, 이영희：계약서 검토",
+    "김철수 - 견적 회신",
+    "  오늘 회의는 잘 끝났다  ",
+  ].join("\n");
+  assert.deepEqual(collectUnreadLines(text), [
+    "1. 김철수: 견적 회신 (10/20)",
+    "**김철수**: 견적 회신",
+    "김철수(개발): 로그 확인",
+    "김철수, 이영희：계약서 검토",
+  ]);
+});
+
+test("읽은 줄과 안건·결정 줄, 빈 줄은 읽지 못한 줄에 넣지 않는다", () => {
+  const text = "김철수: 견적 회신 (10/20)\n참고: 이전 회의록\n안건: 예산\n결정: 예산 확정\n\n   ";
+  assert.deepEqual(collectUnreadLines(text), []);
+});
+
+test("형식 안내 문구가 있다", () => {
+  assert.ok(FORMAT_HINT.includes("김철수: 견적 회신 (10/20)"));
+  assert.ok(FORMAT_GUIDE.includes("이름: 할 일"));
 });
