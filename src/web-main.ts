@@ -1,5 +1,6 @@
 import { classifyActionItems } from "./action-items.js";
 import { appInfo } from "./app-info.js";
+import { formatGroupForCopy, hasCopyableItems } from "./copy-text.js";
 import { groupByAssignee } from "./group-items.js";
 
 document.querySelector<HTMLElement>("#app-title")!.textContent = appInfo.title;
@@ -28,7 +29,22 @@ function render(): void {
           return li;
         }),
       );
-      groupLi.append(title, sub);
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.textContent = "복사";
+      copyButton.disabled = !hasCopyableItems(group);
+      copyButton.addEventListener("click", () => {
+        navigator.clipboard.writeText(formatGroupForCopy(group)).then(
+          () => {
+            copyButton.textContent = "복사됨";
+            setTimeout(() => {
+              copyButton.textContent = "복사";
+            }, 1500);
+          },
+          () => {},
+        );
+      });
+      groupLi.append(title, copyButton, sub);
       return groupLi;
   });
   const extra: HTMLLIElement[] = [];
