@@ -206,7 +206,80 @@ textarea:hover {
 .manual-copy {
   flex: 1 1 100%;
   width: 100%;
+  min-height: 2.25rem;
   background: #f5f6f7;
+  border-style: dashed;
+}
+
+.card-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--sapListBorderColor);
+}
+
+.card .card-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+textarea,
+.manual-copy {
+  min-height: 2.25rem;
+  border-radius: 0.25rem;
+}
+
+textarea:focus-visible {
+  border-color: var(--sapBrandColor);
+}
+
+.button.button-default {
+  min-height: 2.25rem;
+  flex-shrink: 0;
+  border-color: var(--sapBrandColor);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: var(--sapBrandColor);
+}
+
+.button.button-default:hover {
+  background: #e8f0fb;
+  border-color: var(--sapBrandHoverColor);
+  color: var(--sapBrandHoverColor);
+}
+
+.button.button-default:active {
+  background: #d3e3f8;
+  border-color: var(--sapBrandActiveColor);
+  color: var(--sapBrandActiveColor);
+}
+
+.button.button-default:focus-visible {
+  outline: 2px solid var(--sapBrandColor);
+  outline-offset: 2px;
+}
+
+.button.button-default:disabled {
+  background: var(--sapDisabledColor);
+  border-color: var(--sapDisabledColor);
+  color: var(--sapDisabledTextColor);
+  cursor: not-allowed;
+}
+
+.group {
+  min-width: 0;
+}
+
+.group-title {
+  padding-bottom: 0.25rem;
+}
+
+.items > li:first-child {
+  border-top: 1px solid var(--sapListBorderColor);
+}
+
+.items > li:hover {
+  background: var(--sapBackgroundColor);
 }
 
 @media (max-width: 600px) {
@@ -224,5 +297,14 @@ textarea:hover {
 
   .group {
     padding: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .group-title {
+    flex: 1 1 8rem;
+  }
+
+  .card .card-header h2 {
+    font-size: 1rem;
   }
 }
