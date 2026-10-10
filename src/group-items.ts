@@ -1,19 +1,10 @@
 import type { ActionItem } from "./action-items.js";
+import { dueRank } from "./due-date.js";
 
 /** 한 담당자의 할 일 묶음. */
 export interface AssigneeGroup {
   assignee: string;
   items: ActionItem[];
-}
-
-const DUE_DATE_PATTERN = /^(\d{1,2})\/(\d{1,2})$/;
-
-// M/D는 월*100+일, 기한이 없거나 해석되지 않으면 맨 아래.
-function dueRank(due: string | undefined): number {
-  if (!due) return Number.POSITIVE_INFINITY;
-  const match = DUE_DATE_PATTERN.exec(due);
-  if (!match) return Number.POSITIVE_INFINITY;
-  return Number(match[1]) * 100 + Number(match[2]);
 }
 
 /** 담당자별로 묶고(첫 등장 순서), 묶음 안은 기한 빠른 순으로 정렬한다. */
