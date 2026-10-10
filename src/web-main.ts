@@ -1,4 +1,9 @@
-import { classifyActionItems } from "./action-items.js";
+import {
+  FORMAT_GUIDE,
+  FORMAT_HINT,
+  classifyActionItems,
+  collectUnreadLines,
+} from "./action-items.js";
 import { appInfo } from "./app-info.js";
 import { formatGroupForCopy, hasCopyableItems } from "./copy-text.js";
 import { groupByAssignee } from "./group-items.js";
@@ -12,6 +17,7 @@ const empty = document.querySelector<HTMLElement>("#action-items-empty")!;
 
 function render(): void {
   const { items, unclear } = classifyActionItems(input.value);
+  const unread = collectUnreadLines(input.value);
   const groupLis = groupByAssignee(items).map((group) => {
       const groupLi = document.createElement("li");
       const title = document.createElement("strong");
@@ -48,7 +54,7 @@ function render(): void {
       return groupLi;
   });
   const extra: HTMLLIElement[] = [];
-  if (unclear.length > 0) {
+  if (unclear.length > 0 || unread.length > 0) {
     const unclearLi = document.createElement("li");
     const title = document.createElement("strong");
     title.textContent = "확인이 필요한 줄";
@@ -61,12 +67,29 @@ function render(): void {
         return li;
       }),
     );
+    sub.append(
+      ...unread.map((line) => {
+        const li = document.createElement("li");
+        li.textContent = line;
+        return li;
+      }),
+    );
     unclearLi.append(title, sub);
     extra.push(unclearLi);
   }
   list.replaceChildren(...groupLis, ...extra);
-  empty.hidden = items.length > 0 || unclear.length > 0;
+  if (items.length === 0 && input.value.trim() !== "") {
+    empty.textContent = FORMAT_GUIDE;
+    empty.hidden = false;
+  } else {
+    empty.textContent = "할 일이 없습니다.";
+    empty.hidden = items.length > 0 || unclear.length > 0 || unread.length > 0;
+  }
 }
+
+const formatHint = document.createElement("p");
+formatHint.textContent = FORMAT_HINT;
+input.insertAdjacentElement("afterend", formatHint);
 
 input.addEventListener("input", render);
 render();
