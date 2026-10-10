@@ -8,6 +8,10 @@
     "build": "tsc --noEmit && vite build",
     "test": "npm run build && node --test --import tsx test/*.test.ts"
   },
+  "dependencies": {
+    "@ui5/webcomponents": "2.27.2",
+    "@ui5/webcomponents-base": "2.27.2"
+  },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsx": "^4.19.2",
