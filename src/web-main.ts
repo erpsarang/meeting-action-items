@@ -5,7 +5,7 @@ import {
   collectUnreadLines,
 } from "./action-items.js";
 import { appInfo } from "./app-info.js";
-import { formatGroupForCopy, hasCopyableItems } from "./copy-text.js";
+import { COPY_FAILED_LABEL, formatGroupForCopy, hasCopyableItems } from "./copy-text.js";
 import { groupByAssignee } from "./group-items.js";
 
 document.querySelector<HTMLElement>("#app-title")!.textContent = appInfo.title;
@@ -39,16 +39,33 @@ function render(): void {
       copyButton.type = "button";
       copyButton.textContent = "복사";
       copyButton.disabled = !hasCopyableItems(group);
+      let manualCopy: HTMLTextAreaElement | undefined;
       copyButton.addEventListener("click", () => {
-        navigator.clipboard.writeText(formatGroupForCopy(group)).then(
-          () => {
-            copyButton.textContent = "복사됨";
-            setTimeout(() => {
-              copyButton.textContent = "복사";
-            }, 1500);
-          },
-          () => {},
-        );
+        const text = formatGroupForCopy(group);
+        Promise.resolve()
+          .then(() => navigator.clipboard.writeText(text))
+          .then(
+            () => {
+              copyButton.textContent = "복사됨";
+              setTimeout(() => {
+                copyButton.textContent = "복사";
+              }, 1500);
+            },
+            () => {
+              copyButton.textContent = COPY_FAILED_LABEL;
+              setTimeout(() => {
+                copyButton.textContent = "복사";
+              }, 1500);
+              if (!manualCopy) {
+                manualCopy = document.createElement("textarea");
+                manualCopy.readOnly = true;
+                manualCopy.rows = text.split("\n").length;
+                groupLi.append(manualCopy);
+              }
+              manualCopy.value = text;
+              manualCopy.select();
+            },
+          );
       });
       groupLi.append(title, copyButton, sub);
       return groupLi;
