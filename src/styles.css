@@ -136,61 +136,36 @@ ui5-textarea {
 }
 
 .items {
+  display: block;
   flex: 1 1 100%;
-  list-style: none;
+  min-width: 0;
   margin: 0;
   padding: 0;
 }
 
-.items > li {
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--app-list-border);
+ui5-li {
   overflow-wrap: anywhere;
 }
 
-.items > li.done {
+ui5-li.done {
   color: var(--app-label);
   text-decoration: line-through;
 }
 
 .group-unclear {
-  border-left: 0.25rem solid var(--app-warning);
-  background: var(--app-warning-bg);
+  padding: 0;
+  border: 0;
 }
 
-.button {
-  min-height: 2rem;
-  padding: 0 1rem;
-  border: 1px solid var(--app-brand);
-  border-radius: 0.5rem;
-  background: var(--app-brand);
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
+ui5-message-strip {
+  display: block;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.button:hover {
-  background: var(--app-brand-hover);
-  border-color: var(--app-brand-hover);
-}
-
-.button:active {
-  background: var(--app-brand-active);
-  border-color: var(--app-brand-active);
-}
-
-.button:focus-visible {
-  outline: 2px solid var(--app-brand);
-  outline-offset: 2px;
-}
-
-.button:disabled {
-  background: var(--app-disabled);
-  border-color: var(--app-disabled);
-  color: var(--app-disabled-text);
-  cursor: not-allowed;
+ui5-message-strip .group-title {
+  display: block;
 }
 
 textarea.manual-copy {
@@ -214,37 +189,8 @@ textarea.manual-copy:focus-visible {
   border-color: var(--app-brand);
 }
 
-.button.button-default {
-  min-height: 2.25rem;
+ui5-button {
   flex-shrink: 0;
-  border-color: var(--app-brand);
-  border-radius: 0.5rem;
-  background: #ffffff;
-  color: var(--app-brand);
-}
-
-.button.button-default:hover {
-  background: #e8f0fb;
-  border-color: var(--app-brand-hover);
-  color: var(--app-brand-hover);
-}
-
-.button.button-default:active {
-  background: #d3e3f8;
-  border-color: var(--app-brand-active);
-  color: var(--app-brand-active);
-}
-
-.button.button-default:focus-visible {
-  outline: 2px solid var(--app-brand);
-  outline-offset: 2px;
-}
-
-.button.button-default:disabled {
-  background: var(--app-disabled);
-  border-color: var(--app-disabled);
-  color: var(--app-disabled-text);
-  cursor: not-allowed;
 }
 
 .group {
@@ -253,14 +199,6 @@ textarea.manual-copy:focus-visible {
 
 .group-title {
   padding-bottom: 0.25rem;
-}
-
-.items > li:first-child {
-  border-top: 1px solid var(--app-list-border);
-}
-
-.items > li:hover {
-  background: var(--app-background);
 }
 
 @media (max-width: 600px) {

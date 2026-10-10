@@ -48,6 +48,24 @@ test("web-main.ts는 글꼴 로딩을 끄고 필요한 UI5 컴포넌트만 impor
   assert.doesNotMatch(webMain, /webcomponents-fiori/);
 });
 
+test("web-main.ts는 목록, 버튼, 경고 상자 UI5 컴포넌트를 import하고 쓴다", () => {
+  for (const name of ["Button", "List", "ListItemStandard", "MessageStrip"]) {
+    assert.ok(webMain.includes(`@ui5/webcomponents/dist/${name}.js`), `${name} import 없음`);
+  }
+  for (const tag of ["ui5-button", "ui5-list", "ui5-li", "ui5-message-strip"]) {
+    assert.ok(webMain.includes(`"${tag}"`), `${tag} 사용 없음`);
+  }
+  assert.doesNotMatch(webMain, /createElement\("button"\)/);
+  assert.match(webMain, /hideCloseButton = true/);
+});
+
+test("web-main.ts는 복사 문구를 유지한다", () => {
+  assert.ok(webMain.includes('"복사됨"'));
+  assert.ok(webMain.includes('"복사"'));
+  assert.match(webMain, /COPY_FAILED_LABEL/);
+  assert.ok(webMain.includes("확인이 필요한 줄"));
+});
+
 test("styles.css는 포커스 표시와 좁은 화면 규칙을 가진다", () => {
   assert.match(css, /:focus-visible/);
   assert.match(css, /@media/);
