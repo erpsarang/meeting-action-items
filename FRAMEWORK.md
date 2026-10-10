@@ -4,7 +4,7 @@ This repository is bootstrapped with AI Development Framework MVP v0.2 canonical
 
 - Source repository: `erpsarang/self-improvement-mvp`
 - Framework line: `v0.2`
-- Framework source SHA: `5f245167423071a32e48352864f6feb103fc82bb`
+- Framework source SHA: `d92009f019f38bf5a4d9b896a4f2e434601fc719`
 - Canonical path: User Requirement → Read-only AI PLAN → Human `PLAN-승인` → PLAN_AUTHORIZE → ImplementContract + Context Pack → bounded untrusted Worker → exact-base deterministic CI → bounded pre-Bridge repair (max 2) if required → PASS candidate only → PLAN Bridge → SEAL → PUBLISH → VERIFY → Semantic REVIEW → bounded LOCAL_FIX if required → MERGE_READY → Human Merge → Trusted LEARN Source → Read-only AI LEARN → Trusted Improvement Candidate → Human decision.
 - PLAN contract: `questions` contains blocking questions only; `implementationScope.ready=true` requires `questions=[]`; any blocking question requires `ready=false` with an empty implementation scope.
 - PLAN model: one subscription executor call per PLAN, `sonnet` with effort medium by default. Only a human-written requirement whose body checks `- [x] 복잡한 요구입니다` (Issue template) uses `opus`; bodies not written by a human, such as Product Discovery candidates, never escalate. The chosen model is bound into the PLAN_REQUEST/RESULT marker.
