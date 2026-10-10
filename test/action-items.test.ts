@@ -53,6 +53,6 @@ test("메모가 섞여 있으면 할 일 줄만 순서대로 뽑는다", () => {
   );
 });
 
-test("알려진 한계: 체크박스 없는 '안건: 예산' 줄도 포함된다", () => {
-  assert.equal(parseActionItems("안건: 예산").length, 1);
+test("안건과 결정 줄은 담당자로 뽑지 않는다", () => {
+  assert.deepEqual(parseActionItems("안건: 예산\n결정: 예산 확정\n- [ ] 안건: 예산"), []);
 });

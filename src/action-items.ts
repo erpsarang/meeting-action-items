@@ -9,6 +9,8 @@ export interface ActionItem {
 // [목록 기호] [체크박스] 이름(글자 1~3단어): 할 일
 const LINE_PATTERN = /^\s*(?:[-*+]\s+)?(?:\[([ xX])\]\s*)?(\p{L}+(?: \p{L}+){0,2})\s*[:：]\s*(.+?)\s*$/u;
 const DUE_PATTERN = /^(.*?)\s*\(([^()]+)\)$/;
+// 담당자가 아닌 라벨.
+const NON_ASSIGNEE_LABELS = new Set(["안건", "결정"]);
 
 /** 회의록 텍스트에서 `이름: 할 일` 모양의 줄만 골라 목록으로 돌려준다. */
 export function parseActionItems(text: string): ActionItem[] {
@@ -20,6 +22,7 @@ export function parseActionItems(text: string): ActionItem[] {
     const assignee = match[2];
     const rest = match[3];
     if (assignee === undefined || rest === undefined) continue;
+    if (NON_ASSIGNEE_LABELS.has(assignee)) continue;
     // URL(http://...)은 이름: 할 일이 아니다.
     if (rest.startsWith("//")) continue;
 
